@@ -15,8 +15,7 @@ Set by default:
     connect_timeout:    2
     read_timeout:       1
     write_timeout:      1
-    reconnect_attempts: 1
-    reconnect_delay:    0.2
+    reconnect_attempts: [0.2]
 
 `:url` should be a uri, like: `redis://localhost:6379/0`. For two or more uris, combine with a comma: `redis://host-a,redis://host-b`.
 
@@ -67,9 +66,13 @@ In `environment/[env].rb`:
 
 
 ## Installation
-Add this line to your application's Gemfile:
+Add `smart_cache_store` plus one driver to your application's Gemfile:
 
 ```ruby
+gem 'redis' # for redis; gem v4.x or 5.x
+# OR
+gem 'dalli' # for memcache
+
 gem "smart_cache_store"
 ```
 

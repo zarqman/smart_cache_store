@@ -32,9 +32,18 @@ module ActiveSupport
           connect_timeout:    2,
           read_timeout:       1,
           write_timeout:      1,
-          reconnect_attempts: 1,
-          reconnect_delay:    0.2,
         )
+        if Redis::VERSION >= '5'
+          args.reverse_merge!(
+            # when an array, contains delay for each reconnect attempt
+            reconnect_attempts: [0.2]
+          )
+        else
+          args.reverse_merge!(
+            reconnect_attempts: 1,
+            reconnect_delay:    0.2,
+          )
+        end
         args[:url] ||= ENV['REDIS_URL'] unless args.key?(:redis) || args.key?(:url)
         args[:url] = args[:url].split(',') if args[:url].is_a?(String)
         super(**args)
