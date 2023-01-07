@@ -11,7 +11,7 @@ Set by default:
     namespace:          ENV['REDIS_NAMESPACE']
     expires_in:         1.day
     race_condition_ttl: 5.seconds
-    pool_size:          ENV['RAILS_MAX_THREADS'] || 5
+    pool:               ENV['RAILS_MAX_THREADS'] || 5
     connect_timeout:    2
     read_timeout:       1
     write_timeout:      1
@@ -31,7 +31,7 @@ Set by default:
     expires_in:         1.day
     race_condition_ttl: 5.seconds
     failover:           true
-    pool_size:          ENV['RAILS_MAX_THREADS'] || 5
+    pool:               ENV['RAILS_MAX_THREADS'] || 5
 
 MemCacheStore's legacy initializer with `*addresses` as the first parameter, and the RedisCacheStore compatible `:url` are supported.
 
