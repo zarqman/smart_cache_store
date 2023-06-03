@@ -1,3 +1,7 @@
+#### 0.3.1
+
+- Change pool: N to pool: {size: N} for AS 7.1
+
 #### 0.3.0
 
 - Support ActiveSupport 7.1

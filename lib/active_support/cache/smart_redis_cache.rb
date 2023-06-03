@@ -13,9 +13,12 @@ module ActiveSupport
 
       # known options:
       #   ActiveSupport::Cache - universal options
-      #     :namespace{nil}, :compress{true}, :compress_threshold{1k}, :expires_in{0}, :race_condition_ttl{0}
+      #     :namespace{nil}, :compress{true}, :compress_threshold{1k}, :coder, :expires_in{0}
+      #     :race_condition_ttl{0}, :skip_nil{false}
       #   ActiveSupport::Cache::Store
-      #     :pool{5}, :pool_timeout{5}
+      #     pool: {:size{5}, :timeout{5}}
+      #   ActiveSupport::Cache::RedisCacheStore
+      #     :error_handler
       #   Redis
       #     :host, :port, :db, :username, :password, :url, :path
       #     ssl_params: {:ca_file, :cert, :key}
@@ -28,12 +31,16 @@ module ActiveSupport
           namespace:          ENV['REDIS_NAMESPACE'],
           expires_in:         1.day,
           race_condition_ttl: 5.seconds,
-          pool:               ENV.fetch('RAILS_MAX_THREADS'){ 5 }.to_i,
           connect_timeout:    2,
           read_timeout:       1,
           write_timeout:      1,
         )
-        args.reverse_merge!(pool_size: args.delete(:pool)) if ActiveSupport.version < '7.1.0.a'
+        if ActiveSupport.version >= '7.1.0.a'
+          args[:pool] ||= {}
+          args[:pool][:size] ||= Integer(ENV.fetch('RAILS_MAX_THREADS'){ 5 })
+        else
+          args[:pool_size] ||= Integer(ENV.fetch('RAILS_MAX_THREADS'){ 5 })
+        end
         if Redis::VERSION >= '5'
           args.reverse_merge!(
             # when an array, contains delay for each reconnect attempt

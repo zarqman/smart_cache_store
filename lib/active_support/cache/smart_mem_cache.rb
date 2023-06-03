@@ -15,9 +15,10 @@ module ActiveSupport
 
       # known options:
       #   ActiveSupport::Cache - universal options
-      #     :namespace{nil}, :compress{true}, :compress_threshold{1k}, :expires_in{0}, :race_condition_ttl{0}
+      #     :namespace{nil}, :compress{true}, :compress_threshold{1k}, :coder, :expires_in{0}
+      #     :race_condition_ttl{0}, :skip_nil{false}
       #   ActiveSupport::Cache::Store
-      #     :pool{5}, :pool_timeout{5}
+      #     pool: {:size{5}, :timeout{5}}
       #   Dalli::Client
       #     :failover{true}, :serializer{Marshall}, :compressor{zlib}, :cache_nils{false}
       #     :namespace{nil}, :expires_in{0}, :compress{false} (separate from AS::C's same options above)
@@ -28,9 +29,13 @@ module ActiveSupport
           expires_in:         1.day,
           race_condition_ttl: 5.seconds,
           failover:           true,
-          pool:               ENV.fetch('RAILS_MAX_THREADS'){ 5 }.to_i,
         )
-        args.reverse_merge!(pool_size: args.delete(:pool)) if ActiveSupport.version < '7.1.0.a'
+        if ActiveSupport.version >= '7.1.0.a'
+          args[:pool] ||= {}
+          args[:pool][:size] ||= Integer(ENV.fetch('RAILS_MAX_THREADS'){ 5 })
+        else
+          args[:pool_size] ||= Integer(ENV.fetch('RAILS_MAX_THREADS'){ 5 })
+        end
         addresses.push Array(args.delete(:url)) if addresses.empty? && args.key?(:url)
         super(*addresses, args)
       end
