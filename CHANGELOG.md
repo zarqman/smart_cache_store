@@ -1,3 +1,7 @@
+#### 1.0.0
+
+- (Breaking) Require ActiveSupport 6.1+ (drops 5.2, 6.0)
+
 #### 0.3.1
 
 - Change pool: N to pool: {size: N} for AS 7.1

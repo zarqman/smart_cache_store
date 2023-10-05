@@ -15,6 +15,6 @@ Gem::Specification.new do |spec|
 
   spec.files = Dir["lib/**/*", "LICENSE.txt", "Rakefile", "README.md"]
 
-  spec.add_dependency "activesupport", ">= 5.2"
+  spec.add_dependency "activesupport", ">= 6.1"
   spec.add_dependency "connection_pool", ">= 2.2.4"
 end
