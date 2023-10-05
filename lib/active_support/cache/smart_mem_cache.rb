@@ -51,7 +51,7 @@ module ActiveSupport
           options = merged_options(options)
           instrument(:increment, name, amount: amount) do
             rescue_error_with nil do
-              @data.then { |c| c.incr(normalize_key(name, options), amount, options[:expires_in], amount) }
+              @data.with { |c| c.incr(normalize_key(name, options), amount, options[:expires_in], amount) }
             end
           end
         end
@@ -60,7 +60,7 @@ module ActiveSupport
           options = merged_options(options)
           instrument(:decrement, name, amount: amount) do
             rescue_error_with nil do
-              @data.then { |c| c.decr(normalize_key(name, options), amount, options[:expires_in], 0) }
+              @data.with { |c| c.decr(normalize_key(name, options), amount, options[:expires_in], 0) }
             end
           end
         end
